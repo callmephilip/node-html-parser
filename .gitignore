@@ -16,7 +16,8 @@ node_modules
 bower_components
 
 *.sublime-*
-dist/
+# XX: include dist for now to install straight from github
+# dist/
 /test/yarn.lock
 package-lock.json
 .yarnrc

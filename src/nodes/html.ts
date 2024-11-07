@@ -158,7 +158,11 @@ export default class HTMLElement extends Node {
 			return 'null';
 		}
 
-		return JSON.stringify(attr.replace(/"/g, '&quot;')).replace(/\\t/g, '\t').replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\/g, '');
+		return JSON.stringify(attr.replace(/"/g, '&quot;'))
+			.replace(/\\t/g, '\t')
+			.replace(/\\n/g, '\n')
+			.replace(/\\r/g, '\r')
+			.replace(/\\/g, '');
 	}
 
 	/**
@@ -372,11 +376,7 @@ export default class HTMLElement extends Node {
 			return child === this;
 		});
 		resetParent([this], null);
-		parent.childNodes = [
-			...parent.childNodes.slice(0, idx),
-			...resetParent(content, parent),
-			...parent.childNodes.slice(idx + 1),
-		];
+		parent.childNodes = [...parent.childNodes.slice(0, idx), ...resetParent(content, parent), ...parent.childNodes.slice(idx + 1)];
 		return this;
 	}
 
@@ -455,10 +455,12 @@ export default class HTMLElement extends Node {
 		this.childNodes.length = o;
 
 		// remove whitespace between attributes
-		const attrs = Object.keys( this.rawAttributes).map((key) => {
-			const val = this.rawAttributes[key];
-			return `${key}=${ JSON.stringify(val)}`;
-		}).join(' ');
+		const attrs = Object.keys(this.rawAttributes)
+			.map((key) => {
+				const val = this.rawAttributes[key];
+				return `${key}=${JSON.stringify(val)}`;
+			})
+			.join(' ');
 		this.rawAttrs = attrs;
 		delete this._rawAttrs;
 		return this;
@@ -564,7 +566,7 @@ export default class HTMLElement extends Node {
 			if (child.nodeType === NodeType.ELEMENT_NODE) {
 				if (child.id === id) {
 					return child;
-				};
+				}
 
 				// if children are existing push the current status to the stack and keep searching for elements in the level below
 				if (child.childNodes.length > 0) {
@@ -704,7 +706,7 @@ export default class HTMLElement extends Node {
 		}
 		const attrs = {} as RawAttributes;
 		if (this.rawAttrs) {
-			const re = /([a-zA-Z()[\]#@$.?:][a-zA-Z0-9-_:()[\]#]*)(?:\s*=\s*((?:'[^']*')|(?:"[^"]*")|\S+))?/g;
+			const re = /([a-zA-Z()\[\]#@$.?:][a-zA-Z0-9-._:()[\]#]*)(?:\s*=\s*((?:'[^']*')|(?:"[^"]*")|\S+))?/g;
 			let match: RegExpExecArray;
 			while ((match = re.exec(this.rawAttrs))) {
 				const key = match[1];
@@ -985,7 +987,7 @@ export interface Options {
 		 * void tag serialisation, add a final slash <br/>
 		 */
 		closingSlash?: boolean;
-	}
+	};
 }
 
 const frameflag = 'documentfragmentcontainer';
@@ -1035,6 +1037,7 @@ export function base_parse(data: string, options = {} as Partial<Options>) {
 		// Note: Object destructuring here consistently tests as higher performance than array destructuring
 		// eslint-disable-next-line prefer-const
 		let { 0: matchText, 1: leadingSlash, 2: tagName, 3: attributes, 4: closingSlash } = match;
+
 		const matchLength = matchText.length;
 		const tagStartPos = kMarkupPattern.lastIndex - matchLength;
 		const tagEndPos = kMarkupPattern.lastIndex;
@@ -1071,7 +1074,7 @@ export function base_parse(data: string, options = {} as Partial<Options>) {
 		if (!leadingSlash) {
 			/* Populate attributes */
 			const attrs = {} as Record<string, string>;
-			for (let attMatch; (attMatch = kAttributePattern.exec(attributes));) {
+			for (let attMatch; (attMatch = kAttributePattern.exec(attributes)); ) {
 				const { 1: key, 2: val } = attMatch;
 				const isQuoted = val[0] === `'` || val[0] === `"`;
 				attrs[key.toLowerCase()] = isQuoted ? val.slice(1, val.length - 1) : val;

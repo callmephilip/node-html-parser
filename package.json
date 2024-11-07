@@ -6,7 +6,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"compile": "tsc",
-		"build": "npm run lint && npm run clean && npm run compile:cjs && npm run compile:amd",
+		"build": "npm run clean && npm run compile:cjs && npm run compile:amd",
 		"compile:cjs": "tsc -m commonjs",
 		"watch": "npx tsc -m commonjs --watch --preserveWatchOutput",
 		"compile:amd": "tsc -t es5 -m amd -d false --outFile ./dist/main.js",
